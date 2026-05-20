@@ -3,8 +3,8 @@
   "short_name": "ジュエル",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff1c7",
-  "theme_color": "#ffcf33",
+  "background_color": "#fff2b8",
+  "theme_color": "#ffd34d",
   "orientation": "portrait",
   "icons": [
     {
