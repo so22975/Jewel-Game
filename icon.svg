@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#ffcf33"/>
+  <circle cx="175" cy="210" r="55" fill="#ff8fab"/>
+  <circle cx="260" cy="250" r="70" fill="#7bdff2"/>
+  <circle cx="335" cy="180" r="48" fill="#cdb4db"/>
+  <text x="256" y="430" text-anchor="middle" font-size="58" font-weight="bold" fill="#ff7a00">JEWEL</text>
+</svg>
