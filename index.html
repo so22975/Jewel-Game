@@ -54,10 +54,7 @@ h1{
   line-height:1;
   font-weight:900;
   color:#fff;
-  text-shadow:
-    3px 3px 0 #ff6aa2,
-    6px 6px 0 #ffb000,
-    0 0 8px #fff;
+  text-shadow:3px 3px 0 #ff6aa2,6px 6px 0 #ffb000,0 0 8px #fff;
 }
 #top{
   display:grid;
@@ -73,15 +70,10 @@ h1{
   font-weight:900;
   padding:5px;
 }
-.label{
-  font-size:13px;
-}
+.label{font-size:13px;}
 .value{
   font-size:24px;
   color:#ef4f84;
-}
-#nextGem{
-  font-size:28px;
 }
 #buttons{
   display:flex;
@@ -102,18 +94,21 @@ h1{
 }
 #main{
   display:grid;
-  grid-template-columns:1fr 94px;
+  grid-template-columns:minmax(0,360px) 94px;
+  justify-content:center;
   gap:6px;
 }
 #gameArea{
   position:relative;
-  width:100%;
+  width:360px;
   height:540px;
+  max-width:100%;
   background:linear-gradient(#fffdeb,#fff5bc);
   border:6px solid #ffd66b;
   border-radius:26px;
   overflow:hidden;
   box-shadow:0 6px 0 #d59d34;
+  box-sizing:border-box;
 }
 #gameArea:before{
   content:"✨   ✨     ✨   ✨     ✨";
@@ -179,6 +174,7 @@ h1{
   box-shadow:0 5px 0 #d59d34;
   padding:5px 3px;
   font-weight:900;
+  box-sizing:border-box;
 }
 #sideTitle{
   background:#ff6f83;
@@ -211,12 +207,75 @@ h1{
   font-weight:900;
   box-shadow:0 5px 0 #d59d34;
 }
-.rabbit,.bear{
-  font-size:38px;
-}
+.rabbit,.bear{font-size:38px;}
 canvas{
   position:relative;
   z-index:2;
+}
+
+@media (max-width:470px){
+  html,body{
+    overflow:hidden;
+  }
+  #wrap{
+    max-width:100%;
+    padding:4px;
+  }
+  h1{
+    font-size:34px;
+  }
+  #top{
+    gap:4px;
+  }
+  .label{
+    font-size:11px;
+  }
+  .value{
+    font-size:20px;
+  }
+  #buttons{
+    margin-bottom:4px;
+  }
+  .roundBtn{
+    width:44px;
+    height:44px;
+    font-size:20px;
+  }
+  #main{
+    grid-template-columns:1fr;
+  }
+  #gameArea{
+    width:100%;
+    height:auto;
+    aspect-ratio:360 / 540;
+  }
+  #side{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:3px;
+    padding:4px;
+  }
+  #sideTitle{
+    grid-column:1 / -1;
+    margin-bottom:2px;
+  }
+  .evoGem{
+    width:34px;
+    height:34px;
+  }
+  .evo{
+    font-size:10px;
+  }
+  .arrow{
+    display:none;
+  }
+  #caption{
+    font-size:13px;
+    padding:5px;
+  }
+  .rabbit,.bear{
+    font-size:26px;
+  }
 }
 </style>
 </head>
@@ -275,12 +334,14 @@ canvas{
 document.addEventListener("gesturestart", e => e.preventDefault());
 document.addEventListener("gesturechange", e => e.preventDefault());
 document.addEventListener("gestureend", e => e.preventDefault());
+
 let lastTouchEnd = 0;
 document.addEventListener("touchend", e => {
   const now = Date.now();
   if(now - lastTouchEnd <= 300) e.preventDefault();
   lastTouchEnd = now;
 }, {passive:false});
+
 document.addEventListener("touchmove", e => {
   if(e.touches.length > 1) e.preventDefault();
 }, {passive:false});
@@ -353,6 +414,7 @@ soundBtn.onclick = () => {
   soundOn = !soundOn;
   soundBtn.textContent = soundOn ? "🔊" : "🔇";
 };
+
 musicBtn.onclick = () => {
   musicOn = !musicOn;
   musicBtn.textContent = musicOn ? "♪" : "×";
@@ -378,6 +440,7 @@ const render = Render.create({
     background:"transparent"
   }
 });
+
 Render.run(render);
 Runner.run(Runner.create(), engine);
 
@@ -427,6 +490,7 @@ Events.on(engine, "collisionStart", event => {
   event.pairs.forEach(pair => {
     const a = pair.bodyA;
     const b = pair.bodyB;
+
     if(!a.isJewel || !b.isJewel) return;
     if(a.jewelLevel !== b.jewelLevel) return;
     if(a.merging || b.merging) return;
@@ -459,6 +523,7 @@ Events.on(engine, "collisionStart", event => {
 
 Events.on(engine, "afterUpdate", () => {
   if(gameOver) return;
+
   for(const body of engine.world.bodies){
     if(body.isJewel && body.position.y < 82 && body.speed < .25){
       gameOver = true;
@@ -472,11 +537,12 @@ Events.on(engine, "afterUpdate", () => {
 
 function pathGem(ctx, r, shape){
   ctx.beginPath();
+
   if(shape === "round"){
     for(let i=0;i<14;i++){
-      const a = Math.PI*2*i/14 - Math.PI/2;
-      const rr = i%2 ? r*.88 : r;
-      ctx.lineTo(Math.cos(a)*rr, Math.sin(a)*rr);
+      const a = Math.PI * 2 * i / 14 - Math.PI / 2;
+      const rr = i % 2 ? r * .88 : r;
+      ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
     }
   }else if(shape === "drop"){
     ctx.moveTo(0,-r);
@@ -486,8 +552,8 @@ function pathGem(ctx, r, shape){
     ctx.roundRect(-r*.72,-r*.9,r*1.44,r*1.8,r*.18);
   }else if(shape === "oct"){
     for(let i=0;i<8;i++){
-      const a = Math.PI*2*i/8 + Math.PI/8;
-      ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+      const a = Math.PI * 2 * i / 8 + Math.PI / 8;
+      ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
     }
   }else if(shape === "oval"){
     ctx.ellipse(0,0,r*.85,r,0,0,Math.PI*2);
@@ -496,52 +562,118 @@ function pathGem(ctx, r, shape){
     ctx.bezierCurveTo(-r*1.05,0,-r*.65,-r*.85,0,-r*.45);
     ctx.bezierCurveTo(r*.65,-r*.85,r*1.05,0,0,r*.75);
   }else{
-    ctx.moveTo(0,-r);
-    ctx.lineTo(r*.9,-r*.15);
-    ctx.lineTo(r*.55,r*.75);
+    // ダイヤモンドのルース風
+    ctx.moveTo(-r*.62,-r*.72);
+    ctx.lineTo(r*.62,-r*.72);
+    ctx.lineTo(r*.98,-r*.25);
+    ctx.lineTo(r*.36,r*.82);
     ctx.lineTo(0,r);
-    ctx.lineTo(-r*.55,r*.75);
-    ctx.lineTo(-r*.9,-r*.15);
+    ctx.lineTo(-r*.36,r*.82);
+    ctx.lineTo(-r*.98,-r*.25);
   }
+
   ctx.closePath();
 }
 
 function drawFace(ctx, r, type){
   ctx.fillStyle = "#2b1b1b";
+
   if(type === "wink"){
-    ctx.beginPath(); ctx.arc(-r*.28,-r*.08,r*.08,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(-r*.28,-r*.08,r*.08,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle = "#2b1b1b";
     ctx.lineWidth = Math.max(2,r*.05);
-    ctx.beginPath(); ctx.moveTo(r*.18,-r*.08); ctx.lineTo(r*.38,-r*.16); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(r*.18,-r*.08);
+    ctx.lineTo(r*.38,-r*.16);
+    ctx.stroke();
   }else if(type === "sleep"){
+    ctx.strokeStyle = "#2b1b1b";
     ctx.lineWidth = Math.max(2,r*.05);
-    ctx.beginPath(); ctx.arc(-r*.25,-r*.08,r*.1,0,Math.PI); ctx.stroke();
-    ctx.beginPath(); ctx.arc(r*.25,-r*.08,r*.1,0,Math.PI); ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(-r*.25,-r*.08,r*.1,0,Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(r*.25,-r*.08,r*.1,0,Math.PI);
+    ctx.stroke();
   }else{
-    ctx.beginPath(); ctx.arc(-r*.25,-r*.1,r*.08,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(r*.25,-r*.1,r*.08,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(-r*.25,-r*.1,r*.08,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(r*.25,-r*.1,r*.08,0,Math.PI*2);
+    ctx.fill();
+
     ctx.fillStyle = "#fff";
-    ctx.beginPath(); ctx.arc(-r*.28,-r*.13,r*.025,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(r*.22,-r*.13,r*.025,0,Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(-r*.28,-r*.13,r*.025,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(r*.22,-r*.13,r*.025,0,Math.PI*2);
+    ctx.fill();
   }
 
   ctx.strokeStyle = "#2b1b1b";
   ctx.lineWidth = Math.max(2,r*.05);
   ctx.beginPath();
+
   if(type === "small"){
     ctx.arc(0,r*.12,r*.1,0,Math.PI);
   }else{
     ctx.arc(0,r*.08,r*.18,0,Math.PI);
   }
+
   ctx.stroke();
 
   ctx.fillStyle = "rgba(255,130,160,.85)";
-  ctx.beginPath(); ctx.arc(-r*.42,r*.12,r*.1,0,Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(r*.42,r*.12,r*.1,0,Math.PI*2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(-r*.42,r*.12,r*.1,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(r*.42,r*.12,r*.1,0,Math.PI*2);
+  ctx.fill();
+}
+
+function drawDiamondCuts(ctx, r){
+  ctx.globalAlpha = .72;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = Math.max(1.5, r * .035);
+
+  ctx.beginPath();
+
+  ctx.moveTo(-r*.62,-r*.72);
+  ctx.lineTo(-r*.32,-r*.25);
+  ctx.lineTo(0,r);
+
+  ctx.moveTo(r*.62,-r*.72);
+  ctx.lineTo(r*.32,-r*.25);
+  ctx.lineTo(0,r);
+
+  ctx.moveTo(0,-r*.72);
+  ctx.lineTo(0,r);
+
+  ctx.moveTo(-r*.98,-r*.25);
+  ctx.lineTo(r*.98,-r*.25);
+
+  ctx.moveTo(-r*.62,-r*.72);
+  ctx.lineTo(0,-r*.25);
+  ctx.lineTo(r*.62,-r*.72);
+
+  ctx.stroke();
+  ctx.globalAlpha = 1;
 }
 
 function drawGem(ctx, x, y, r, level, angle=0, clear=false){
   const d = jewels[level];
-  if(clear) ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+  if(clear){
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+  }
 
   ctx.save();
   ctx.translate(x,y);
@@ -552,27 +684,37 @@ function drawGem(ctx, x, y, r, level, angle=0, clear=false){
   ctx.shadowOffsetY = 3;
 
   pathGem(ctx,r,d.shape);
+
   const grad = ctx.createLinearGradient(-r,-r,r,r);
   grad.addColorStop(0,"#ffffff");
   grad.addColorStop(.25,d.color);
   grad.addColorStop(1,d.dark);
+
   ctx.fillStyle = grad;
   ctx.fill();
+
   ctx.lineWidth = Math.max(3,r*.08);
   ctx.strokeStyle = "#ffffff";
   ctx.stroke();
 
   ctx.shadowColor = "transparent";
-  ctx.globalAlpha = .45;
-  ctx.strokeStyle = "#fff";
-  ctx.lineWidth = Math.max(1,r*.035);
-  for(let i=-1;i<=1;i++){
-    ctx.beginPath();
-    ctx.moveTo(0,-r*.75);
-    ctx.lineTo(i*r*.45,r*.65);
-    ctx.stroke();
+
+  if(d.shape === "diamond"){
+    drawDiamondCuts(ctx,r);
+  }else{
+    ctx.globalAlpha = .45;
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = Math.max(1,r*.035);
+
+    for(let i=-1;i<=1;i++){
+      ctx.beginPath();
+      ctx.moveTo(0,-r*.75);
+      ctx.lineTo(i*r*.45,r*.65);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
   }
-  ctx.globalAlpha = 1;
 
   ctx.beginPath();
   ctx.arc(-r*.28,-r*.38,r*.18,0,Math.PI*2);
@@ -580,13 +722,16 @@ function drawGem(ctx, x, y, r, level, angle=0, clear=false){
   ctx.fill();
 
   drawFace(ctx,r,d.face);
+
   ctx.restore();
 }
 
 Events.on(render, "afterRender", () => {
   const ctx = render.context;
+
   for(const body of engine.world.bodies){
     if(!body.isJewel) continue;
+
     const d = jewels[body.jewelLevel];
     drawGem(ctx, body.position.x, body.position.y, d.r, body.jewelLevel, body.angle);
   }
@@ -594,27 +739,33 @@ Events.on(render, "afterRender", () => {
 
 function makeEvoList(){
   evoList.innerHTML = "";
+
   jewels.forEach((j,i) => {
     const box = document.createElement("div");
     box.className = "evo";
+
     const c = document.createElement("canvas");
     c.width = 46;
     c.height = 46;
     c.className = "evoGem";
     box.appendChild(c);
+
     const name = document.createElement("div");
     name.textContent = (i+1) + " " + j.name;
     box.appendChild(name);
+
     if(i < jewels.length - 1){
       const ar = document.createElement("div");
       ar.className = "arrow";
       ar.textContent = "↓";
       box.appendChild(ar);
     }
+
     evoList.appendChild(box);
     drawGem(c.getContext("2d"),23,23,Math.min(17,j.r*.38),i,0,false);
   });
 }
+
 makeEvoList();
 
 if("serviceWorker" in navigator){
