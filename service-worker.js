@@ -1,4 +1,4 @@
-const CACHE_NAME = "korokoro-jewel-kawaii-v1";
+const CACHE_NAME = "korokoro-jewel-kawaii-v3";
 
 const FILES_TO_CACHE = [
   "./",
