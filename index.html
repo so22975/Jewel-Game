@@ -2,12 +2,12 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ころころジュエル</title>
 
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
-<meta name="theme-color" content="#ffcf33">
+<meta name="theme-color" content="#ffd34d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ころころジュエル">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -26,154 +26,248 @@ html,body{
   -webkit-tap-highlight-color:transparent;
 }
 body{
-  font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+  font-family:"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  background:linear-gradient(#6ed0ff 0%,#bceeff 38%,#fff2b8 72%,#9ee86f 100%);
   text-align:center;
-  background:linear-gradient(#bcefff,#fff3c4);
-  color:#333;
+  color:#6b3b18;
 }
-body::before{
-  content:"";
+body:before{
+  content:"🌈  ✨   ⭐   ☁️        ✨   ⭐";
   position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,.8) 0 8px, transparent 9px),
-    radial-gradient(circle at 80% 30%, rgba(255,255,255,.7) 0 6px, transparent 7px),
-    radial-gradient(circle at 30% 80%, rgba(255,255,255,.6) 0 5px, transparent 6px);
-  animation:floatBg 5s infinite alternate ease-in-out;
+  top:8px;
+  left:0;
+  right:0;
+  font-size:30px;
+  opacity:.75;
   pointer-events:none;
 }
-@keyframes floatBg{
-  from{transform:translateY(0)}
-  to{transform:translateY(-12px)}
+#wrap{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  padding:6px;
+  box-sizing:border-box;
 }
 h1{
-  margin:8px 0 2px;
-  font-size:30px;
-  color:#ff7a00;
-  text-shadow:2px 2px #fff;
+  margin:6px 0;
+  font-size:42px;
+  line-height:1;
+  font-weight:900;
+  color:#fff;
+  text-shadow:
+    3px 3px 0 #ff6aa2,
+    6px 6px 0 #ffb000,
+    0 0 8px #fff;
 }
 #top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:6px;
+  margin-bottom:6px;
+}
+.panel{
+  background:linear-gradient(#fffef8,#fff2c6);
+  border:4px solid #ffd66b;
+  border-radius:18px;
+  box-shadow:0 4px 0 #d59d34;
+  font-weight:900;
+  padding:5px;
+}
+.label{
+  font-size:13px;
+}
+.value{
+  font-size:24px;
+  color:#ef4f84;
+}
+#nextGem{
+  font-size:28px;
+}
+#buttons{
   display:flex;
   justify-content:center;
   gap:8px;
-  font-weight:bold;
-  font-size:16px;
+  margin-bottom:6px;
 }
-.badge{
-  background:#fff;
-  border-radius:16px;
-  padding:6px 12px;
-  box-shadow:0 3px 0 #ddd;
+.roundBtn{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:4px solid #fff;
+  background:linear-gradient(#ffc72f,#ff8f00);
+  box-shadow:0 4px 0 #c77700;
+  font-size:24px;
+  font-weight:900;
+  color:#fff;
+}
+#main{
+  display:grid;
+  grid-template-columns:1fr 94px;
+  gap:6px;
 }
 #gameArea{
   position:relative;
-  width:360px;
+  width:100%;
   height:540px;
-  max-width:94vw;
-  margin:8px auto 0;
-  background:linear-gradient(#fffef6,#fff8dd);
-  border:6px solid #ffcf66;
-  border-radius:24px;
+  background:linear-gradient(#fffdeb,#fff5bc);
+  border:6px solid #ffd66b;
+  border-radius:26px;
   overflow:hidden;
-  box-shadow:0 6px 0 #d6a94b;
+  box-shadow:0 6px 0 #d59d34;
+}
+#gameArea:before{
+  content:"✨   ✨     ✨   ✨     ✨";
+  position:absolute;
+  inset:0;
+  color:white;
+  font-size:28px;
+  opacity:.65;
+  animation:kirakira 3s infinite alternate ease-in-out;
+  pointer-events:none;
+}
+@keyframes kirakira{
+  from{transform:translateY(0)}
+  to{transform:translateY(-15px)}
 }
 #guide{
   position:absolute;
   top:0;
   width:3px;
   height:540px;
-  background:rgba(255,120,0,.22);
-  z-index:3;
+  background:rgba(255,93,139,.45);
+  border-left:2px dashed #ff6f9c;
+  z-index:5;
   pointer-events:none;
 }
-#nextBox{
-  position:absolute;
-  top:8px;
-  left:8px;
-  z-index:4;
-  background:rgba(255,255,255,.92);
-  border-radius:16px;
-  padding:6px 10px;
-  font-size:13px;
-  font-weight:bold;
-}
-#line{
+#deadLine{
   position:absolute;
   top:82px;
   left:0;
   right:0;
-  border-top:3px dashed rgba(255,90,90,.45);
-  z-index:2;
+  border-top:3px dashed rgba(255,80,120,.55);
+  z-index:4;
 }
 #message{
   position:absolute;
-  top:180px;
-  left:20px;
-  right:20px;
+  top:175px;
+  left:18px;
+  right:18px;
   background:rgba(255,255,255,.96);
-  border-radius:24px;
+  border:5px solid #ffd66b;
+  border-radius:26px;
   padding:20px;
-  font-size:23px;
-  font-weight:bold;
   display:none;
-  z-index:10;
-  box-shadow:0 5px 0 #ddd;
+  z-index:20;
+  font-size:24px;
+  font-weight:900;
+  box-shadow:0 5px 0 #d59d34;
 }
-button{
-  margin-top:10px;
-  font-size:21px;
-  font-weight:bold;
-  border:none;
-  border-radius:18px;
+#again{
+  margin-top:12px;
+  font-size:22px;
   padding:12px 28px;
+  border:none;
+  border-radius:20px;
   background:#ffcf33;
-  box-shadow:0 5px 0 #c9a000;
+  box-shadow:0 5px 0 #c99a00;
+  font-weight:900;
 }
-#order{
-  width:360px;
-  max-width:94vw;
-  margin:8px auto 0;
-  background:rgba(255,255,255,.86);
-  border-radius:18px;
+#side{
+  background:linear-gradient(#fffdf5,#fff3ce);
+  border:5px solid #ffd66b;
+  border-radius:22px;
+  box-shadow:0 5px 0 #d59d34;
+  padding:5px 3px;
+  font-weight:900;
+}
+#sideTitle{
+  background:#ff6f83;
+  color:white;
+  border-radius:14px;
+  padding:5px 2px;
+  margin-bottom:4px;
+}
+.evo{
+  font-size:11px;
+  line-height:1.05;
+  margin:2px 0 3px;
+}
+.evoGem{
+  width:42px;
+  height:42px;
+  margin:auto;
+}
+.arrow{
+  color:#b66a22;
+  font-size:14px;
+}
+#caption{
+  margin:6px auto 0;
+  max-width:380px;
+  background:#fff;
+  border:5px solid #ffd66b;
+  border-radius:22px;
   padding:8px;
-  font-size:12px;
-  line-height:1.6;
-  box-sizing:border-box;
+  font-weight:900;
+  box-shadow:0 5px 0 #d59d34;
 }
-.small{
-  font-size:13px;
-  color:#555;
-  margin-top:4px;
+.rabbit,.bear{
+  font-size:38px;
+}
+canvas{
+  position:relative;
+  z-index:2;
 }
 </style>
 </head>
 
 <body>
+<div id="wrap">
+  <h1>ころころジュエル</h1>
 
-<h1>ころころジュエル</h1>
+  <div id="top">
+    <div class="panel">
+      <div class="label">👑 スコア</div>
+      <div class="value" id="score">0</div>
+    </div>
+    <div class="panel">
+      <div class="label">👑 ハイスコア</div>
+      <div class="value" id="highScore">0</div>
+    </div>
+    <div class="panel">
+      <div class="label">つぎの宝石</div>
+      <canvas id="nextGem" width="52" height="42"></canvas>
+    </div>
+  </div>
 
-<div id="top">
-  <div class="badge" id="score">スコア：0</div>
-  <div class="badge" id="highScore">ハイスコア：0</div>
-</div>
+  <div id="buttons">
+    <button class="roundBtn" id="musicBtn">♪</button>
+    <button class="roundBtn" id="soundBtn">🔊</button>
+  </div>
 
-<div id="gameArea">
-  <div id="nextBox">つぎ：<span id="nextName">ガーネット</span></div>
-  <div id="guide"></div>
-  <div id="line"></div>
-  <div id="message">
-    ゲームおわり！<br>
-    <span id="finalScore"></span><br>
-    <button onclick="location.reload()">もういちど</button>
+  <div id="main">
+    <div id="gameArea">
+      <div id="deadLine"></div>
+      <div id="guide"></div>
+      <div id="message">
+        ゲームおわり！<br>
+        <span id="finalScore"></span><br>
+        <button id="again" onclick="location.reload()">もういちど</button>
+      </div>
+    </div>
+
+    <div id="side">
+      <div id="sideTitle">進化の順番</div>
+      <div id="evoList"></div>
+    </div>
+  </div>
+
+  <div id="caption">
+    <span class="rabbit">🐰</span>
+    同じ宝石をぶつけると、つぎの宝石に進化するよ！
+    <span class="bear">🐻</span>
   </div>
 </div>
-
-<div id="order">
-  進化の順番：<br>
-  ①ガーネット → ②アメジスト → ③アクアマリン → ④エメラルド → ⑤サファイア → ⑥ルビー → ⑦ダイヤモンド
-</div>
-
-<div class="small">同じ宝石がぶつかると、次の宝石に進化します。</div>
 
 <script src="./matter.min.js"></script>
 
@@ -181,14 +275,12 @@ button{
 document.addEventListener("gesturestart", e => e.preventDefault());
 document.addEventListener("gesturechange", e => e.preventDefault());
 document.addEventListener("gestureend", e => e.preventDefault());
-
 let lastTouchEnd = 0;
 document.addEventListener("touchend", e => {
   const now = Date.now();
   if(now - lastTouchEnd <= 300) e.preventDefault();
   lastTouchEnd = now;
 }, {passive:false});
-
 document.addEventListener("touchmove", e => {
   if(e.touches.length > 1) e.preventDefault();
 }, {passive:false});
@@ -201,62 +293,80 @@ const scoreEl = document.getElementById("score");
 const highScoreEl = document.getElementById("highScore");
 const message = document.getElementById("message");
 const finalScore = document.getElementById("finalScore");
-const nextNameEl = document.getElementById("nextName");
+const evoList = document.getElementById("evoList");
+const nextCanvas = document.getElementById("nextGem");
+const soundBtn = document.getElementById("soundBtn");
+const musicBtn = document.getElementById("musicBtn");
 
 const W = 360;
 const H = 540;
 
 let score = 0;
-let highScore = Number(localStorage.getItem("jewelHighScore") || 0);
+let highScore = Number(localStorage.getItem("korokoroJewelHighScore") || 0);
 let gameOver = false;
 let canDrop = true;
 let dropX = W / 2;
 let nextLevel = 0;
+let soundOn = true;
+let musicOn = true;
+let musicTimer = null;
 
-highScoreEl.textContent = "ハイスコア：" + highScore;
+highScoreEl.textContent = highScore;
 
 const jewels = [
-  {name:"ガーネット", r:16, color:"#b91c1c", point:10},
-  {name:"アメジスト", r:22, color:"#8b5cf6", point:20},
-  {name:"アクアマリン", r:28, color:"#38bdf8", point:40},
-  {name:"エメラルド", r:36, color:"#22c55e", point:80},
-  {name:"サファイア", r:45, color:"#2563eb", point:160},
-  {name:"ルビー", r:56, color:"#e11d48", point:320},
-  {name:"ダイヤモンド", r:68, color:"#dff9ff", point:640}
+  {name:"ガーネット", r:16, color:"#e94343", dark:"#9f1414", shape:"round", point:10, face:"smile"},
+  {name:"アメジスト", r:22, color:"#9b5cf6", dark:"#5c2bb8", shape:"drop", point:20, face:"happy"},
+  {name:"アクアマリン", r:28, color:"#67d9ff", dark:"#1599c8", shape:"rect", point:40, face:"small"},
+  {name:"エメラルド", r:36, color:"#2ddc70", dark:"#108a3d", shape:"oct", point:80, face:"sleep"},
+  {name:"サファイア", r:45, color:"#2676ff", dark:"#123fb8", shape:"oval", point:160, face:"smile"},
+  {name:"ルビー", r:56, color:"#ff4f86", dark:"#c41145", shape:"heart", point:320, face:"wink"},
+  {name:"ダイヤモンド", r:68, color:"#e9fbff", dark:"#82dff2", shape:"diamond", point:640, face:"happy"}
 ];
 
-function playSound(type){
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  const ctx = new AudioContextClass();
+function playTone(freq, dur=.12, vol=.08){
+  if(!soundOn) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AC();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain);
   gain.connect(ctx.destination);
-
-  if(type === "merge"){
-    osc.frequency.value = 660;
-    gain.gain.value = 0.12;
-  }else if(type === "drop"){
-    osc.frequency.value = 330;
-    gain.gain.value = 0.07;
-  }else{
-    osc.frequency.value = 120;
-    gain.gain.value = 0.1;
-  }
-
+  osc.frequency.value = freq;
+  gain.gain.value = vol;
   osc.start();
-  osc.stop(ctx.currentTime + 0.12);
+  osc.stop(ctx.currentTime + dur);
 }
+
+function startMusic(){
+  if(musicTimer) clearInterval(musicTimer);
+  if(!musicOn) return;
+  let notes = [392,440,523,440];
+  let i = 0;
+  musicTimer = setInterval(() => {
+    playTone(notes[i % notes.length], .08, .025);
+    i++;
+  }, 900);
+}
+startMusic();
+
+soundBtn.onclick = () => {
+  soundOn = !soundOn;
+  soundBtn.textContent = soundOn ? "🔊" : "🔇";
+};
+musicBtn.onclick = () => {
+  musicOn = !musicOn;
+  musicBtn.textContent = musicOn ? "♪" : "×";
+  startMusic();
+};
 
 function chooseNext(){
-  nextLevel = Math.random() < 0.75 ? 0 : 1;
-  nextNameEl.textContent = jewels[nextLevel].name;
+  nextLevel = Math.random() < .75 ? 0 : 1;
+  drawGem(nextCanvas.getContext("2d"), 26, 22, 17, nextLevel, 0, true);
 }
-
 chooseNext();
 
 const engine = Engine.create();
-engine.gravity.y = 0.9;
+engine.gravity.y = .9;
 
 const render = Render.create({
   element: gameArea,
@@ -268,39 +378,26 @@ const render = Render.create({
     background:"transparent"
   }
 });
-
 Render.run(render);
 Runner.run(Runner.create(), engine);
 
 World.add(engine.world, [
-  Bodies.rectangle(W/2, H+15, W, 30, {isStatic:true, render:{fillStyle:"#ffcf66"}}),
-  Bodies.rectangle(-15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffcf66"}}),
-  Bodies.rectangle(W+15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffcf66"}})
+  Bodies.rectangle(W/2, H+15, W, 30, {isStatic:true, render:{fillStyle:"#ffd66b"}}),
+  Bodies.rectangle(-15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffd66b"}}),
+  Bodies.rectangle(W+15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffd66b"}})
 ]);
 
 function createJewel(x,y,level){
   const d = jewels[level];
   const body = Bodies.circle(x, y, d.r, {
-    restitution:0.22,
-    friction:0.2,
-    density:0.001,
+    restitution:.22,
+    friction:.22,
+    density:.001,
     render:{visible:false}
   });
   body.isJewel = true;
   body.jewelLevel = level;
   return body;
-}
-
-function dropJewel(){
-  if(gameOver || !canDrop) return;
-  canDrop = false;
-
-  const body = createJewel(dropX, 30, nextLevel);
-  World.add(engine.world, body);
-  playSound("drop");
-  chooseNext();
-
-  setTimeout(()=>canDrop = true, 650);
 }
 
 function setDropPosition(e){
@@ -311,7 +408,16 @@ function setDropPosition(e){
   guide.style.left = (dropX / scaleX) + "px";
 }
 
-gameArea.addEventListener("pointermove", e => setDropPosition(e));
+function dropJewel(){
+  if(gameOver || !canDrop) return;
+  canDrop = false;
+  World.add(engine.world, createJewel(dropX, 30, nextLevel));
+  playTone(330, .1, .06);
+  chooseNext();
+  setTimeout(() => canDrop = true, 620);
+}
+
+gameArea.addEventListener("pointermove", setDropPosition);
 gameArea.addEventListener("pointerdown", e => {
   setDropPosition(e);
   dropJewel();
@@ -321,7 +427,6 @@ Events.on(engine, "collisionStart", event => {
   event.pairs.forEach(pair => {
     const a = pair.bodyA;
     const b = pair.bodyB;
-
     if(!a.isJewel || !b.isJewel) return;
     if(a.jewelLevel !== b.jewelLevel) return;
     if(a.merging || b.merging) return;
@@ -337,87 +442,180 @@ Events.on(engine, "collisionStart", event => {
 
     World.remove(engine.world, a);
     World.remove(engine.world, b);
-
-    const next = createJewel(x, y, level + 1);
-    World.add(engine.world, next);
+    World.add(engine.world, createJewel(x, y, level + 1));
 
     score += jewels[level + 1].point;
-    scoreEl.textContent = "スコア：" + score;
+    scoreEl.textContent = score;
 
     if(score > highScore){
       highScore = score;
-      localStorage.setItem("jewelHighScore", highScore);
-      highScoreEl.textContent = "ハイスコア：" + highScore;
+      localStorage.setItem("korokoroJewelHighScore", highScore);
+      highScoreEl.textContent = highScore;
     }
 
-    playSound("merge");
+    playTone(660 + level * 80, .14, .1);
   });
 });
 
 Events.on(engine, "afterUpdate", () => {
   if(gameOver) return;
-
   for(const body of engine.world.bodies){
-    if(body.isJewel && body.position.y < 82 && body.speed < 0.25){
+    if(body.isJewel && body.position.y < 82 && body.speed < .25){
       gameOver = true;
       message.style.display = "block";
       finalScore.textContent = "スコア：" + score;
-      playSound("end");
+      playTone(120, .3, .12);
       break;
     }
   }
 });
 
+function pathGem(ctx, r, shape){
+  ctx.beginPath();
+  if(shape === "round"){
+    for(let i=0;i<14;i++){
+      const a = Math.PI*2*i/14 - Math.PI/2;
+      const rr = i%2 ? r*.88 : r;
+      ctx.lineTo(Math.cos(a)*rr, Math.sin(a)*rr);
+    }
+  }else if(shape === "drop"){
+    ctx.moveTo(0,-r);
+    ctx.bezierCurveTo(r*.95,-r*.35,r*.85,r*.8,0,r);
+    ctx.bezierCurveTo(-r*.85,r*.8,-r*.95,-r*.35,0,-r);
+  }else if(shape === "rect"){
+    ctx.roundRect(-r*.72,-r*.9,r*1.44,r*1.8,r*.18);
+  }else if(shape === "oct"){
+    for(let i=0;i<8;i++){
+      const a = Math.PI*2*i/8 + Math.PI/8;
+      ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
+    }
+  }else if(shape === "oval"){
+    ctx.ellipse(0,0,r*.85,r,0,0,Math.PI*2);
+  }else if(shape === "heart"){
+    ctx.moveTo(0,r*.75);
+    ctx.bezierCurveTo(-r*1.05,0,-r*.65,-r*.85,0,-r*.45);
+    ctx.bezierCurveTo(r*.65,-r*.85,r*1.05,0,0,r*.75);
+  }else{
+    ctx.moveTo(0,-r);
+    ctx.lineTo(r*.9,-r*.15);
+    ctx.lineTo(r*.55,r*.75);
+    ctx.lineTo(0,r);
+    ctx.lineTo(-r*.55,r*.75);
+    ctx.lineTo(-r*.9,-r*.15);
+  }
+  ctx.closePath();
+}
+
+function drawFace(ctx, r, type){
+  ctx.fillStyle = "#2b1b1b";
+  if(type === "wink"){
+    ctx.beginPath(); ctx.arc(-r*.28,-r*.08,r*.08,0,Math.PI*2); ctx.fill();
+    ctx.lineWidth = Math.max(2,r*.05);
+    ctx.beginPath(); ctx.moveTo(r*.18,-r*.08); ctx.lineTo(r*.38,-r*.16); ctx.stroke();
+  }else if(type === "sleep"){
+    ctx.lineWidth = Math.max(2,r*.05);
+    ctx.beginPath(); ctx.arc(-r*.25,-r*.08,r*.1,0,Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.arc(r*.25,-r*.08,r*.1,0,Math.PI); ctx.stroke();
+  }else{
+    ctx.beginPath(); ctx.arc(-r*.25,-r*.1,r*.08,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(r*.25,-r*.1,r*.08,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(-r*.28,-r*.13,r*.025,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(r*.22,-r*.13,r*.025,0,Math.PI*2); ctx.fill();
+  }
+
+  ctx.strokeStyle = "#2b1b1b";
+  ctx.lineWidth = Math.max(2,r*.05);
+  ctx.beginPath();
+  if(type === "small"){
+    ctx.arc(0,r*.12,r*.1,0,Math.PI);
+  }else{
+    ctx.arc(0,r*.08,r*.18,0,Math.PI);
+  }
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(255,130,160,.85)";
+  ctx.beginPath(); ctx.arc(-r*.42,r*.12,r*.1,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(r*.42,r*.12,r*.1,0,Math.PI*2); ctx.fill();
+}
+
+function drawGem(ctx, x, y, r, level, angle=0, clear=false){
+  const d = jewels[level];
+  if(clear) ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(angle);
+
+  ctx.shadowColor = "rgba(0,0,0,.18)";
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 3;
+
+  pathGem(ctx,r,d.shape);
+  const grad = ctx.createLinearGradient(-r,-r,r,r);
+  grad.addColorStop(0,"#ffffff");
+  grad.addColorStop(.25,d.color);
+  grad.addColorStop(1,d.dark);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.lineWidth = Math.max(3,r*.08);
+  ctx.strokeStyle = "#ffffff";
+  ctx.stroke();
+
+  ctx.shadowColor = "transparent";
+  ctx.globalAlpha = .45;
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = Math.max(1,r*.035);
+  for(let i=-1;i<=1;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,-r*.75);
+    ctx.lineTo(i*r*.45,r*.65);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath();
+  ctx.arc(-r*.28,-r*.38,r*.18,0,Math.PI*2);
+  ctx.fillStyle = "rgba(255,255,255,.65)";
+  ctx.fill();
+
+  drawFace(ctx,r,d.face);
+  ctx.restore();
+}
+
 Events.on(render, "afterRender", () => {
   const ctx = render.context;
-
   for(const body of engine.world.bodies){
     if(!body.isJewel) continue;
-
     const d = jewels[body.jewelLevel];
-    const x = body.position.x;
-    const y = body.position.y;
-    const r = d.r;
-
-    ctx.save();
-    ctx.translate(x,y);
-    ctx.rotate(body.angle);
-
-    ctx.beginPath();
-    ctx.moveTo(0,-r);
-    ctx.lineTo(r*0.78,-r*0.25);
-    ctx.lineTo(r*0.58,r*0.78);
-    ctx.lineTo(0,r);
-    ctx.lineTo(-r*0.58,r*0.78);
-    ctx.lineTo(-r*0.78,-r*0.25);
-    ctx.closePath();
-
-    ctx.fillStyle = d.color;
-    ctx.fill();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = "#ffffff";
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(0,-r);
-    ctx.lineTo(0,r);
-    ctx.moveTo(-r*0.78,-r*0.25);
-    ctx.lineTo(r*0.58,r*0.78);
-    ctx.moveTo(r*0.78,-r*0.25);
-    ctx.lineTo(-r*0.58,r*0.78);
-    ctx.strokeStyle = "rgba(255,255,255,.45)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.fillStyle = body.jewelLevel === 6 ? "#333" : "#fff";
-    ctx.font = "bold " + Math.max(10, r * 0.33) + "px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(d.name.slice(0,2), 0, 0);
-
-    ctx.restore();
+    drawGem(ctx, body.position.x, body.position.y, d.r, body.jewelLevel, body.angle);
   }
 });
+
+function makeEvoList(){
+  evoList.innerHTML = "";
+  jewels.forEach((j,i) => {
+    const box = document.createElement("div");
+    box.className = "evo";
+    const c = document.createElement("canvas");
+    c.width = 46;
+    c.height = 46;
+    c.className = "evoGem";
+    box.appendChild(c);
+    const name = document.createElement("div");
+    name.textContent = (i+1) + " " + j.name;
+    box.appendChild(name);
+    if(i < jewels.length - 1){
+      const ar = document.createElement("div");
+      ar.className = "arrow";
+      ar.textContent = "↓";
+      box.appendChild(ar);
+    }
+    evoList.appendChild(box);
+    drawGem(c.getContext("2d"),23,23,Math.min(17,j.r*.38),i,0,false);
+  });
+}
+makeEvoList();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", () => {
@@ -425,6 +623,5 @@ if("serviceWorker" in navigator){
   });
 }
 </script>
-
 </body>
 </html>
