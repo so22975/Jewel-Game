@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ころころジュエル</title>
 
 <link rel="manifest" href="manifest.json">
@@ -13,74 +13,137 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <style>
-body{
+html,body{
   margin:0;
-  font-family:"Hiragino Sans","Yu Gothic",sans-serif;
-  background:linear-gradient(#dff7ff,#fff1c7);
-  text-align:center;
+  width:100%;
+  height:100%;
   overflow:hidden;
-  user-select:none;
+  overscroll-behavior:none;
   touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+body{
+  font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+  text-align:center;
+  background:linear-gradient(#bcefff,#fff3c4);
+  color:#333;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.8) 0 8px, transparent 9px),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,.7) 0 6px, transparent 7px),
+    radial-gradient(circle at 30% 80%, rgba(255,255,255,.6) 0 5px, transparent 6px);
+  animation:floatBg 5s infinite alternate ease-in-out;
+  pointer-events:none;
+}
+@keyframes floatBg{
+  from{transform:translateY(0)}
+  to{transform:translateY(-12px)}
 }
 h1{
-  margin:10px 0 4px;
+  margin:8px 0 2px;
+  font-size:30px;
   color:#ff7a00;
   text-shadow:2px 2px #fff;
 }
-#score{
-  font-size:22px;
+#top{
+  display:flex;
+  justify-content:center;
+  gap:8px;
   font-weight:bold;
-  margin-bottom:6px;
+  font-size:16px;
+}
+.badge{
+  background:#fff;
+  border-radius:16px;
+  padding:6px 12px;
+  box-shadow:0 3px 0 #ddd;
 }
 #gameArea{
   position:relative;
   width:360px;
-  height:560px;
-  max-width:96vw;
-  margin:0 auto;
-  background:#fffdf2;
+  height:540px;
+  max-width:94vw;
+  margin:8px auto 0;
+  background:linear-gradient(#fffef6,#fff8dd);
   border:6px solid #ffcf66;
-  border-radius:22px;
+  border-radius:24px;
   overflow:hidden;
   box-shadow:0 6px 0 #d6a94b;
 }
 #guide{
   position:absolute;
   top:0;
-  width:2px;
-  height:560px;
-  background:rgba(255,120,0,.25);
+  width:3px;
+  height:540px;
+  background:rgba(255,120,0,.22);
+  z-index:3;
   pointer-events:none;
+}
+#nextBox{
+  position:absolute;
+  top:8px;
+  left:8px;
+  z-index:4;
+  background:rgba(255,255,255,.92);
+  border-radius:16px;
+  padding:6px 10px;
+  font-size:13px;
+  font-weight:bold;
+}
+#line{
+  position:absolute;
+  top:82px;
+  left:0;
+  right:0;
+  border-top:3px dashed rgba(255,90,90,.45);
   z-index:2;
 }
 #message{
   position:absolute;
-  top:200px;
+  top:180px;
   left:20px;
   right:20px;
-  background:rgba(255,255,255,.94);
-  border-radius:22px;
+  background:rgba(255,255,255,.96);
+  border-radius:24px;
   padding:20px;
-  font-size:24px;
+  font-size:23px;
   font-weight:bold;
   display:none;
-  z-index:5;
+  z-index:10;
+  box-shadow:0 5px 0 #ddd;
 }
 button{
   margin-top:10px;
-  font-size:22px;
+  font-size:21px;
   font-weight:bold;
   border:none;
   border-radius:18px;
-  padding:12px 30px;
+  padding:12px 28px;
   background:#ffcf33;
   box-shadow:0 5px 0 #c9a000;
 }
+#order{
+  width:360px;
+  max-width:94vw;
+  margin:8px auto 0;
+  background:rgba(255,255,255,.86);
+  border-radius:18px;
+  padding:8px;
+  font-size:12px;
+  line-height:1.6;
+  box-sizing:border-box;
+}
 .small{
-  font-size:14px;
+  font-size:13px;
   color:#555;
-  margin-top:6px;
-  padding:0 10px;
+  margin-top:4px;
 }
 </style>
 </head>
@@ -88,106 +151,156 @@ button{
 <body>
 
 <h1>ころころジュエル</h1>
-<div id="score">スコア：0</div>
+
+<div id="top">
+  <div class="badge" id="score">スコア：0</div>
+  <div class="badge" id="highScore">ハイスコア：0</div>
+</div>
 
 <div id="gameArea">
+  <div id="nextBox">つぎ：<span id="nextName">ガーネット</span></div>
   <div id="guide"></div>
+  <div id="line"></div>
   <div id="message">
     ゲームおわり！<br>
+    <span id="finalScore"></span><br>
     <button onclick="location.reload()">もういちど</button>
   </div>
 </div>
 
-<div class="small">
-  タップした場所にジュエルを落とそう。同じジュエルがくっつくと進化！
+<div id="order">
+  進化の順番：<br>
+  ①ガーネット → ②アメジスト → ③アクアマリン → ④エメラルド → ⑤サファイア → ⑥ルビー → ⑦ダイヤモンド
 </div>
+
+<div class="small">同じ宝石がぶつかると、次の宝石に進化します。</div>
 
 <script src="./matter.min.js"></script>
 
 <script>
+document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("gesturechange", e => e.preventDefault());
+document.addEventListener("gestureend", e => e.preventDefault());
+
+let lastTouchEnd = 0;
+document.addEventListener("touchend", e => {
+  const now = Date.now();
+  if(now - lastTouchEnd <= 300) e.preventDefault();
+  lastTouchEnd = now;
+}, {passive:false});
+
+document.addEventListener("touchmove", e => {
+  if(e.touches.length > 1) e.preventDefault();
+}, {passive:false});
+
 const {Engine, Render, Runner, Bodies, World, Events} = Matter;
 
 const gameArea = document.getElementById("gameArea");
 const guide = document.getElementById("guide");
-const message = document.getElementById("message");
 const scoreEl = document.getElementById("score");
+const highScoreEl = document.getElementById("highScore");
+const message = document.getElementById("message");
+const finalScore = document.getElementById("finalScore");
+const nextNameEl = document.getElementById("nextName");
 
 const W = 360;
-const H = 560;
+const H = 540;
 
 let score = 0;
+let highScore = Number(localStorage.getItem("jewelHighScore") || 0);
 let gameOver = false;
 let canDrop = true;
 let dropX = W / 2;
+let nextLevel = 0;
+
+highScoreEl.textContent = "ハイスコア：" + highScore;
 
 const jewels = [
-  {r:16, color:"#ff8fab", point:10},
-  {r:22, color:"#ffd166", point:20},
-  {r:28, color:"#7bdff2", point:40},
-  {r:36, color:"#b2f7ef", point:80},
-  {r:45, color:"#cdb4db", point:160},
-  {r:56, color:"#90be6d", point:320},
-  {r:68, color:"#f8961e", point:640}
+  {name:"ガーネット", r:16, color:"#b91c1c", point:10},
+  {name:"アメジスト", r:22, color:"#8b5cf6", point:20},
+  {name:"アクアマリン", r:28, color:"#38bdf8", point:40},
+  {name:"エメラルド", r:36, color:"#22c55e", point:80},
+  {name:"サファイア", r:45, color:"#2563eb", point:160},
+  {name:"ルビー", r:56, color:"#e11d48", point:320},
+  {name:"ダイヤモンド", r:68, color:"#dff9ff", point:640}
 ];
+
+function playSound(type){
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AudioContextClass();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  if(type === "merge"){
+    osc.frequency.value = 660;
+    gain.gain.value = 0.12;
+  }else if(type === "drop"){
+    osc.frequency.value = 330;
+    gain.gain.value = 0.07;
+  }else{
+    osc.frequency.value = 120;
+    gain.gain.value = 0.1;
+  }
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+}
+
+function chooseNext(){
+  nextLevel = Math.random() < 0.75 ? 0 : 1;
+  nextNameEl.textContent = jewels[nextLevel].name;
+}
+
+chooseNext();
 
 const engine = Engine.create();
 engine.gravity.y = 0.9;
 
 const render = Render.create({
   element: gameArea,
-  engine: engine,
+  engine,
   options:{
     width:W,
     height:H,
     wireframes:false,
-    background:"#fffdf2"
+    background:"transparent"
   }
 });
 
 Render.run(render);
 Runner.run(Runner.create(), engine);
 
-const wallOpt = {
-  isStatic:true,
-  render:{fillStyle:"#ffcf66"}
-};
-
 World.add(engine.world, [
-  Bodies.rectangle(W/2, H+15, W, 30, wallOpt),
-  Bodies.rectangle(-15, H/2, 30, H, wallOpt),
-  Bodies.rectangle(W+15, H/2, 30, H, wallOpt)
+  Bodies.rectangle(W/2, H+15, W, 30, {isStatic:true, render:{fillStyle:"#ffcf66"}}),
+  Bodies.rectangle(-15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffcf66"}}),
+  Bodies.rectangle(W+15, H/2, 30, H, {isStatic:true, render:{fillStyle:"#ffcf66"}})
 ]);
 
-function createJewel(x, y, level){
-  const data = jewels[level];
-
-  const body = Bodies.circle(x, y, data.r, {
-    restitution:0.25,
+function createJewel(x,y,level){
+  const d = jewels[level];
+  const body = Bodies.circle(x, y, d.r, {
+    restitution:0.22,
     friction:0.2,
     density:0.001,
-    render:{
-      fillStyle:data.color,
-      strokeStyle:"#ffffff",
-      lineWidth:4
-    }
+    render:{visible:false}
   });
-
-  body.jewelLevel = level;
   body.isJewel = true;
+  body.jewelLevel = level;
   return body;
 }
 
 function dropJewel(){
   if(gameOver || !canDrop) return;
-
   canDrop = false;
-  const level = Math.random() < 0.75 ? 0 : 1;
-  const body = createJewel(dropX, 30, level);
-  World.add(engine.world, body);
 
-  setTimeout(() => {
-    canDrop = true;
-  }, 650);
+  const body = createJewel(dropX, 30, nextLevel);
+  World.add(engine.world, body);
+  playSound("drop");
+  chooseNext();
+
+  setTimeout(()=>canDrop = true, 650);
 }
 
 function setDropPosition(e){
@@ -198,10 +311,7 @@ function setDropPosition(e){
   guide.style.left = (dropX / scaleX) + "px";
 }
 
-gameArea.addEventListener("pointermove", e => {
-  setDropPosition(e);
-});
-
+gameArea.addEventListener("pointermove", e => setDropPosition(e));
 gameArea.addEventListener("pointerdown", e => {
   setDropPosition(e);
   dropJewel();
@@ -233,6 +343,14 @@ Events.on(engine, "collisionStart", event => {
 
     score += jewels[level + 1].point;
     scoreEl.textContent = "スコア：" + score;
+
+    if(score > highScore){
+      highScore = score;
+      localStorage.setItem("jewelHighScore", highScore);
+      highScoreEl.textContent = "ハイスコア：" + highScore;
+    }
+
+    playSound("merge");
   });
 });
 
@@ -240,11 +358,64 @@ Events.on(engine, "afterUpdate", () => {
   if(gameOver) return;
 
   for(const body of engine.world.bodies){
-    if(body.isJewel && body.position.y < 80 && body.speed < 0.25){
+    if(body.isJewel && body.position.y < 82 && body.speed < 0.25){
       gameOver = true;
       message.style.display = "block";
+      finalScore.textContent = "スコア：" + score;
+      playSound("end");
       break;
     }
+  }
+});
+
+Events.on(render, "afterRender", () => {
+  const ctx = render.context;
+
+  for(const body of engine.world.bodies){
+    if(!body.isJewel) continue;
+
+    const d = jewels[body.jewelLevel];
+    const x = body.position.x;
+    const y = body.position.y;
+    const r = d.r;
+
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(body.angle);
+
+    ctx.beginPath();
+    ctx.moveTo(0,-r);
+    ctx.lineTo(r*0.78,-r*0.25);
+    ctx.lineTo(r*0.58,r*0.78);
+    ctx.lineTo(0,r);
+    ctx.lineTo(-r*0.58,r*0.78);
+    ctx.lineTo(-r*0.78,-r*0.25);
+    ctx.closePath();
+
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0,-r);
+    ctx.lineTo(0,r);
+    ctx.moveTo(-r*0.78,-r*0.25);
+    ctx.lineTo(r*0.58,r*0.78);
+    ctx.moveTo(r*0.78,-r*0.25);
+    ctx.lineTo(-r*0.58,r*0.78);
+    ctx.strokeStyle = "rgba(255,255,255,.45)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = body.jewelLevel === 6 ? "#333" : "#fff";
+    ctx.font = "bold " + Math.max(10, r * 0.33) + "px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(d.name.slice(0,2), 0, 0);
+
+    ctx.restore();
   }
 });
 
