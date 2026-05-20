@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ころころジュエル</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+  background:linear-gradient(#dff7ff,#fff1c7);
+  text-align:center;
+  overflow:hidden;
+  user-select:none;
+  touch-action:none;
+}
+h1{
+  margin:10px 0 4px;
+  color:#ff7a00;
+  text-shadow:2px 2px #fff;
+}
+#score{
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+#gameArea{
+  position:relative;
+  width:360px;
+  height:560px;
+  max-width:96vw;
+  margin:0 auto;
+  background:#fffdf2;
+  border:6px solid #ffcf66;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 6px 0 #d6a94b;
+}
+canvas{
+  display:block;
+}
+#guide{
+  position:absolute;
+  top:0;
+  width:2px;
+  height:560px;
+  background:rgba(255,120,0,.25);
+  pointer-events:none;
+}
+#message{
+  position:absolute;
+  top:210px;
+  left:20px;
+  right:20px;
+  background:rgba(255,255,255,.92);
+  border-radius:22px;
+  padding:20px;
+  font-size:24px;
+  font-weight:bold;
+  display:none;
+}
+button{
+  margin-top:8px;
+  font-size:22px;
+  font-weight:bold;
+  border:none;
+  border-radius:18px;
+  padding:12px 30px;
+  background:#ffcf33;
+  box-shadow:0 5px 0 #c9a000;
+}
+.small{
+  font-size:14px;
+  color:#555;
+  margin-top:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ころころジュエル</h1>
+<div id="score">スコア：0</div>
+
+<div id="gameArea">
+  <div id="guide"></div>
+  <div id="message">
+    ゲームおわり！<br>
+    <button onclick="location.reload()">もういちど</button>
+  </div>
+</div>
+
+<div class="small">タップした場所にジュエルを落とそう。同じジュエルがくっつくと進化！</div>
+
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+
+<script>
+const {Engine, Render, Runner, Bodies, Body, World, Events} = Matter;
+
+const gameArea = document.getElementById("gameArea");
+const guide = document.getElementById("guide");
+const message = document.getElementById("message");
+const scoreEl = document.getElementById("score");
+
+const W = 360;
+const H = 560;
+
+let score = 0;
+let gameOver = false;
+let canDrop = true;
+let dropX = W / 2;
+
+const jewels = [
+  {r:16, color:"#ff8fab", label:"●", point:10},
+  {r:22, color:"#ffd166", label:"●", point:20},
+  {r:28, color:"#7bdff2", label:"●", point:40},
+  {r:36, color:"#b2f7ef", label:"●", point:80},
+  {r:45, color:"#cdb4db", label:"●", point:160},
+  {r:56, color:"#90be6d", label:"●", point:320},
+  {r:68, color:"#f8961e", label:"●", point:640}
+];
+
+const engine = Engine.create();
+engine.gravity.y = 0.9;
+
+const render = Render.create({
+  element: gameArea,
+  engine: engine,
+  options:{
+    width:W,
+    height:H,
+    wireframes:false,
+    background:"#fffdf2"
+  }
+});
+
+Render.run(render);
+Runner.run(Runner.create(), engine);
+
+const wallOpt = {isStatic:true, render:{fillStyle:"#ffcf66"}};
+
+World.add(engine.world, [
+  Bodies.rectangle(W/2, H+15, W, 30, wallOpt),
+  Bodies.rectangle(-15, H/2, 30, H, wallOpt),
+  Bodies.rectangle(W+15, H/2, 30, H, wallOpt)
+]);
+
+function createJewel(x, y, level){
+  const data = jewels[level];
+
+  const body = Bodies.circle(x, y, data.r, {
+    restitution:0.25,
+    friction:0.2,
+    density:0.001,
+    render:{
+      fillStyle:data.color,
+      strokeStyle:"#ffffff",
+      lineWidth:4
+    }
+  });
+
+  body.jewelLevel = level;
+  body.isJewel = true;
+  return body;
+}
+
+function dropJewel(){
+  if(gameOver || !canDrop) return;
+
+  canDrop = false;
+  const level = Math.random() < 0.75 ? 0 : 1;
+  const body = createJewel(dropX, 30, level);
+  World.add(engine.world, body);
+
+  setTimeout(() => {
+    canDrop = true;
+  }, 650);
+}
+
+gameArea.addEventListener("pointermove", e => {
+  const rect = gameArea.getBoundingClientRect();
+  dropX = e.clientX - rect.left;
+  dropX = Math.max(30, Math.min(W - 30, dropX));
+  guide.style.left = dropX + "px";
+});
+
+gameArea.addEventListener("pointerdown", e => {
+  const rect = gameArea.getBoundingClientRect();
+  dropX = e.clientX - rect.left;
+  dropX = Math.max(30, Math.min(W - 30, dropX));
+  guide.style.left = dropX + "px";
+  dropJewel();
+});
+
+Events.on(engine, "collisionStart", event => {
+  event.pairs.forEach(pair => {
+    const a = pair.bodyA;
+    const b = pair.bodyB;
+
+    if(!a.isJewel || !b.isJewel) return;
+    if(a.jewelLevel !== b.jewelLevel) return;
+    if(a.merging || b.merging) return;
+
+    const level = a.jewelLevel;
+    if(level >= jewels.length - 1) return;
+
+    a.merging = true;
+    b.merging = true;
+
+    const x = (a.position.x + b.position.x) / 2;
+    const y = (a.position.y + b.position.y) / 2;
+
+    World.remove(engine.world, a);
+    World.remove(engine.world, b);
+
+    const next = createJewel(x, y, level + 1);
+    World.add(engine.world, next);
+
+    score += jewels[level + 1].point;
+    scoreEl.textContent = "スコア：" + score;
+  });
+});
+
+Events.on(engine, "afterUpdate", () => {
+  if(gameOver) return;
+
+  const bodies = engine.world.bodies;
+  for(const body of bodies){
+    if(body.isJewel && body.position.y < 80 && body.speed < 0.3){
+      gameOver = true;
+      message.style.display = "block";
+      break;
+    }
+  }
+});
+</script>
+
+</body>
+</html>
